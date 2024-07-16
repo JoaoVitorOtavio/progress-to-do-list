@@ -12,6 +12,12 @@ export const Container = styled.main`
   background: #ffffff 0% 0% no-repeat padding-box;
   border-radius: 4px;
   opacity: 1;
+
+  @media (min-width: 800px) {
+    width: 800px;
+    height: 600px;
+    padding: 54px 60px;
+  }
 `;
 
 export const DataContainer = styled.div`
@@ -184,6 +190,10 @@ export const ItemContainer = styled.div`
   scrollbar-width: none;
 
   -ms-overflow-style: none;
+
+  @media (min-width: 800px) {
+    max-height: 250px;
+  }
 `;
 
 export const ToDoItem = styled.div`
