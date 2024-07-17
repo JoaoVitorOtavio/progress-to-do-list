@@ -1,4 +1,4 @@
-import { FaCirclePlus } from "react-icons/fa6";
+import { FaCirclePlus, FaCircleMinus, FaCircleCheck } from "react-icons/fa6";
 
 import {
   BackgroundProgress,
@@ -11,6 +11,8 @@ import {
   FilterButton,
   FilterButtonContainer,
   Icon,
+  IconContainer,
+  InputAndTagsContainer,
   InputContainer,
   ItemContainer,
   MonthDayDescription,
@@ -18,6 +20,7 @@ import {
   NewItemButtonContainer,
   NewItemInputContainer,
   ProgressBar,
+  RemoveAddIconContainer,
   StyledInput,
   StyledInputContainer,
   ToDoDescription,
@@ -59,13 +62,15 @@ function App() {
           <ProgressBar />
         </BackgroundProgress>
       </div>
-      <InputContainer>
-        <Input placeholder="Search Items" endIcon />
-      </InputContainer>
-      <FilterButtonContainer>
-        <FilterButton>Done</FilterButton>
-        <FilterButton>Pending</FilterButton>
-      </FilterButtonContainer>
+      <InputAndTagsContainer>
+        <InputContainer>
+          <Input placeholder="Search Items" endIcon />
+        </InputContainer>
+        <FilterButtonContainer>
+          <FilterButton className="mr">Done</FilterButton>
+          <FilterButton>Pending</FilterButton>
+        </FilterButtonContainer>
+      </InputAndTagsContainer>
       <NewItemInputContainer>
         <StyledInput placeholder="Add new item..." className="newItem" />
         <NewItemButtonContainer>
@@ -76,6 +81,23 @@ function App() {
       </NewItemInputContainer>
       <ItemContainer>
         <ToDoItem>
+          <RemoveAddIconContainer>
+            <IconContainer
+              className="remove child-button"
+              onClick={() => console.log("REMOVER")}
+              title="Remover Item"
+            >
+              <FaCircleMinus size="20px" color="#fff" />
+            </IconContainer>
+            <IconContainer className="add child-button">
+              <FaCircleCheck
+                size="20px"
+                color="#fff"
+                onClick={() => console.log("ADICIONAR")}
+                title="Adicionar Item"
+              />
+            </IconContainer>
+          </RemoveAddIconContainer>
           <ToDoDescription>To DO ITEM 1</ToDoDescription>
         </ToDoItem>
         <ToDoItem>

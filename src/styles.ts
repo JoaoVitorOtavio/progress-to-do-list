@@ -139,8 +139,43 @@ export const Icon = styled(FaSearch)`
   color: #848484;
 `;
 
+export const RemoveAddIconContainer = styled.div`
+  display: flex;
+  position: absolute;
+  right: 0;
+`;
+
+export const IconContainer = styled.div`
+  height: 48px;
+  width: 44px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  display: flex;
+
+  @media (min-width: 800px) {
+    display: none;
+  }
+
+  &.remove {
+    background-color: #e34f4f;
+    border: 1px solid #e34f4f;
+  }
+
+  &.add {
+    background-color: #5de290;
+    border: 1px solid #5de290;
+  }
+`;
+
 export const InputContainer = styled.div`
   margin-bottom: 10px;
+
+  @media (min-width: 800px) {
+    margin-bottom: 0;
+    width: -webkit-fill-available;
+    margin-left: 55px;
+  }
 `;
 
 export const FilterButtonContainer = styled.div`
@@ -159,6 +194,10 @@ export const FilterButton = styled.button`
   color: #848484;
   opacity: 1;
   padding: 8px 16px 6px 16px;
+
+  &.mr {
+    margin-right: 8px;
+  }
 `;
 
 export const NewItemButtonContainer = styled.div`
@@ -197,6 +236,7 @@ export const ItemContainer = styled.div`
 `;
 
 export const ToDoItem = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
   padding: 0 10px;
@@ -206,6 +246,10 @@ export const ToDoItem = styled.div`
   opacity: 1;
   margin-bottom: 8px;
   flex-shrink: 0;
+
+  &:hover .child-button {
+    display: flex;
+  }
 `;
 
 export const ToDoDescription = styled.span`
@@ -214,5 +258,14 @@ export const ToDoDescription = styled.span`
   letter-spacing: 0px;
   color: #848484;
   opacity: 1;
+`;
+
+export const InputAndTagsContainer = styled.div`
+  @media (min-width: 800px) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row-reverse;
+  }
 `;
 
