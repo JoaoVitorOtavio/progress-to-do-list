@@ -218,10 +218,12 @@ export const NewItemButton = styled.button`
 
 export const ItemContainer = styled.div`
   display: flex;
+  overflow: visible;
   flex-direction: column;
-  overflow-y: auto;
+  /* overflow-y: auto; */
   scrollbar-width: thin;
   max-height: 400px;
+  /* min-height: 200px; */
   &::-webkit-scrollbar {
     display: none;
   }
@@ -232,16 +234,22 @@ export const ItemContainer = styled.div`
 
   @media (min-width: 800px) {
     max-height: 250px;
+    min-height: 250px;
   }
 `;
 
-export const ToDoItem = styled.div`
+interface ITodoItem {
+  isDisabled: boolean;
+}
+
+export const ToDoItem = styled.div<ITodoItem>`
   position: relative;
   display: flex;
   align-items: center;
   padding: 0 10px;
   height: 48px;
-  background: #f4f4f4 0% 0% no-repeat padding-box;
+  background: ${(props) => (props.isDisabled ? "#f4f4f4" : "#fff")} 0% 0%
+    no-repeat padding-box;
   border: 1px solid #dbdbdb;
   opacity: 1;
   margin-bottom: 8px;
@@ -250,14 +258,26 @@ export const ToDoItem = styled.div`
   &:hover .child-button {
     display: flex;
   }
+
+  &:hover .edit-button {
+    display: block;
+  }
 `;
 
-export const ToDoDescription = styled.span`
+export const ToDoDescription = styled.input`
+  width: 100%;
   text-align: left;
   font: normal normal normal 14px/19px Roboto;
   letter-spacing: 0px;
   color: #848484;
   opacity: 1;
+  background-color: #fff;
+  outline: none;
+  border: none;
+
+  &:disabled {
+    background-color: #f4f4f4;
+  }
 `;
 
 export const InputAndTagsContainer = styled.div`
@@ -266,6 +286,35 @@ export const InputAndTagsContainer = styled.div`
     align-items: center;
     justify-content: space-between;
     flex-direction: row-reverse;
+  }
+`;
+
+export const EditButton = styled.div`
+  display: none;
+  z-index: 1;
+  cursor: pointer;
+  position: absolute;
+  bottom: -36px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px;
+  background-color: #848484;
+  color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  white-space: nowrap;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #848484;
   }
 `;
 

@@ -1,4 +1,5 @@
 import { FaCirclePlus, FaCircleMinus, FaCircleCheck } from "react-icons/fa6";
+import { useState } from "react";
 
 import {
   BackgroundProgress,
@@ -8,6 +9,7 @@ import {
   DataDescriptionContainer,
   DayContainer,
   DayDescription,
+  EditButton,
   FilterButton,
   FilterButtonContainer,
   Icon,
@@ -32,6 +34,39 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   placeholder: string;
   endIcon: boolean;
 }
+
+const Item = () => {
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
+
+  return (
+    <ToDoItem isDisabled={isDisabled}>
+      <EditButton
+        onClick={() => setIsDisabled((oldValue) => !oldValue)}
+        className="edit-button"
+      >
+        Editar Task
+      </EditButton>
+      <RemoveAddIconContainer>
+        <IconContainer
+          className="remove child-button"
+          onClick={() => console.log("REMOVER")}
+          title="Remover Item"
+        >
+          <FaCircleMinus size="20px" color="#fff" />
+        </IconContainer>
+        <IconContainer className="add child-button">
+          <FaCircleCheck
+            size="20px"
+            color="#fff"
+            onClick={() => console.log("ADICIONAR")}
+            title="Adicionar Item"
+          />
+        </IconContainer>
+      </RemoveAddIconContainer>
+      <ToDoDescription value={"To DO ITEM 1"} disabled={isDisabled} />
+    </ToDoItem>
+  );
+};
 
 const Input: React.FC<InputProps> = ({ placeholder, endIcon, ...props }) => (
   <StyledInputContainer>
@@ -80,7 +115,14 @@ function App() {
         </NewItemButtonContainer>
       </NewItemInputContainer>
       <ItemContainer>
-        <ToDoItem>
+        <Item />
+        {/* <ToDoItem>
+          <EditButton
+            onClick={() => console.log("EDITAR")}
+            className="edit-button"
+          >
+            Editar Título
+          </EditButton>
           <RemoveAddIconContainer>
             <IconContainer
               className="remove child-button"
@@ -123,7 +165,7 @@ function App() {
         </ToDoItem>
         <ToDoItem>
           <ToDoDescription>To DO ITEM 3</ToDoDescription>
-        </ToDoItem>
+        </ToDoItem> */}
       </ItemContainer>
     </Container>
   );
