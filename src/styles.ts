@@ -1,5 +1,8 @@
 import styled from "styled-components";
 import { FaSearch } from "react-icons/fa";
+interface IDisabled {
+  isDisabled: boolean;
+}
 
 export const Container = styled.main`
   position: absolute;
@@ -200,20 +203,28 @@ export const FilterButton = styled.button`
   }
 `;
 
-export const NewItemButtonContainer = styled.div`
-  background: #4da6b3 0% 0% no-repeat padding-box;
-  border: 1px solid #4da6b3;
+export const NewItemButtonContainer = styled.div<IDisabled>`
+  cursor: pointer;
+  background: ${(props) => (props.isDisabled ? "#a2ced5" : "#4da6b3")} 0% 0%
+    no-repeat padding-box;
+  border: 1px solid ${(props) => (props.isDisabled ? "#a2ced5" : "#4da6b3")};
   border-radius: 0 4px 4px 0;
   margin-bottom: 16px;
 `;
 
 export const NewItemButton = styled.button`
+  cursor: pointer;
   border: none;
   background: #4da6b3 0% 0% no-repeat padding-box;
   border-radius: 0px 4px 4px 0px;
   opacity: 1;
   height: 48px;
   width: 44px;
+
+  &:disabled {
+    cursor: default;
+    background-color: #a2ced5;
+  }
 `;
 
 export const ItemContainer = styled.div`
@@ -238,11 +249,7 @@ export const ItemContainer = styled.div`
   }
 `;
 
-interface ITodoItem {
-  isDisabled: boolean;
-}
-
-export const ToDoItem = styled.div<ITodoItem>`
+export const ToDoItem = styled.div<IDisabled>`
   position: relative;
   display: flex;
   align-items: center;

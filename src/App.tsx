@@ -76,6 +76,14 @@ const Input: React.FC<InputProps> = ({ placeholder, endIcon, ...props }) => (
 );
 
 function App() {
+  const [newItemDescription, setNewItemDescription] = useState<string>("");
+
+  const handleChangeItemDescription = (
+    e: React.FormEvent<HTMLInputElement>
+  ) => {
+    setNewItemDescription(e.currentTarget.value);
+  };
+
   return (
     <Container>
       <DataContainer>
@@ -107,9 +115,20 @@ function App() {
         </FilterButtonContainer>
       </InputAndTagsContainer>
       <NewItemInputContainer>
-        <StyledInput placeholder="Add new item..." className="newItem" />
-        <NewItemButtonContainer>
-          <NewItemButton>
+        <StyledInput
+          onChange={handleChangeItemDescription}
+          value={newItemDescription}
+          placeholder="Add new item..."
+          className="newItem"
+        />
+        <NewItemButtonContainer isDisabled={!newItemDescription.trim()}>
+          <NewItemButton
+            onClick={(event) => {
+              event.stopPropagation();
+              console.log("teste2");
+            }}
+            disabled={!newItemDescription.trim()}
+          >
             <FaCirclePlus size="20px" color="#fff" />
           </NewItemButton>
         </NewItemButtonContainer>
