@@ -1,5 +1,6 @@
 import { FaCirclePlus, FaCircleMinus, FaCircleCheck } from "react-icons/fa6";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 import {
   BackgroundProgress,
@@ -30,26 +31,74 @@ import {
   YearDescription,
 } from "./styles";
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  placeholder: string;
-  endIcon: boolean;
+interface IToDoItem {
+  id: string;
+  description: string;
 }
 
-const Item = () => {
+type TItemComponent = IToDoItem & {
+  itemsSetState: Dispatch<SetStateAction<IToDoItem[]>>;
+  itemsState: IToDoItem[];
+};
+
+const Item = ({
+  description,
+  id,
+  itemsSetState,
+  itemsState,
+}: TItemComponent) => {
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
+  const [itemDescription, setItemDescription] = useState<string>(description);
+
+  const handleOnChangeDescription = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setItemDescription(e.currentTarget.value);
+  };
+
+  const getItemsWithoutCurrent = () => {
+    return itemsState.filter((item) => item.id !== id);
+  };
+
+  const handleEditItem = () => {
+    if (isDisabled) {
+      setIsDisabled((oldValue) => !oldValue);
+      return;
+    }
+
+    itemsSetState((prevItems) =>
+      prevItems.map((item) =>
+        item.id === id ? { ...item, description: itemDescription } : item
+      )
+    );
+
+    setIsDisabled((oldValue) => !oldValue);
+
+    // another way to do the setState its like that
+    // const currentItem = itemsState.find((item) => item.id === id);
+    // const filteredItems = getItemsWithoutCurrent();
+
+    // itemsSetState([
+    //   ...filteredItems,
+    //   { id: currentItem?.id!, description: itemDescription },
+    // ]);
+    // or using reduce its a good option too
+  };
+
+  const handleRemoveItem = () => {
+    const filteredItems = getItemsWithoutCurrent();
+    itemsSetState(filteredItems);
+  };
 
   return (
     <ToDoItem isDisabled={isDisabled}>
-      <EditButton
-        onClick={() => setIsDisabled((oldValue) => !oldValue)}
-        className="edit-button"
-      >
-        Editar Task
+      <EditButton onClick={() => handleEditItem()} className="edit-button">
+        {isDisabled ? "Editar Task" : "Salvar"}
       </EditButton>
       <RemoveAddIconContainer>
         <IconContainer
           className="remove child-button"
-          onClick={() => console.log("REMOVER")}
+          onClick={() => handleRemoveItem()}
           title="Remover Item"
         >
           <FaCircleMinus size="20px" color="#fff" />
@@ -63,10 +112,19 @@ const Item = () => {
           />
         </IconContainer>
       </RemoveAddIconContainer>
-      <ToDoDescription value={"To DO ITEM 1"} disabled={isDisabled} />
+      <ToDoDescription
+        onChange={(e) => handleOnChangeDescription(e)}
+        value={itemDescription}
+        disabled={isDisabled}
+      />
     </ToDoItem>
   );
 };
+
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  placeholder: string;
+  endIcon: boolean;
+}
 
 const Input: React.FC<InputProps> = ({ placeholder, endIcon, ...props }) => (
   <StyledInputContainer>
@@ -77,11 +135,21 @@ const Input: React.FC<InputProps> = ({ placeholder, endIcon, ...props }) => (
 
 function App() {
   const [newItemDescription, setNewItemDescription] = useState<string>("");
+  const [items, setItems] = useState<IToDoItem[]>([]);
 
   const handleChangeItemDescription = (
     e: React.FormEvent<HTMLInputElement>
   ) => {
     setNewItemDescription(e.currentTarget.value);
+  };
+
+  const handleCreateToDoItem = () => {
+    setItems((oldValue) => [
+      ...oldValue,
+      { id: uuidv4(), description: newItemDescription },
+    ]);
+
+    setNewItemDescription("");
   };
 
   return (
@@ -125,7 +193,7 @@ function App() {
           <NewItemButton
             onClick={(event) => {
               event.stopPropagation();
-              console.log("teste2");
+              handleCreateToDoItem();
             }}
             disabled={!newItemDescription.trim()}
           >
@@ -134,57 +202,15 @@ function App() {
         </NewItemButtonContainer>
       </NewItemInputContainer>
       <ItemContainer>
-        <Item />
-        {/* <ToDoItem>
-          <EditButton
-            onClick={() => console.log("EDITAR")}
-            className="edit-button"
-          >
-            Editar Título
-          </EditButton>
-          <RemoveAddIconContainer>
-            <IconContainer
-              className="remove child-button"
-              onClick={() => console.log("REMOVER")}
-              title="Remover Item"
-            >
-              <FaCircleMinus size="20px" color="#fff" />
-            </IconContainer>
-            <IconContainer className="add child-button">
-              <FaCircleCheck
-                size="20px"
-                color="#fff"
-                onClick={() => console.log("ADICIONAR")}
-                title="Adicionar Item"
-              />
-            </IconContainer>
-          </RemoveAddIconContainer>
-          <ToDoDescription>To DO ITEM 1</ToDoDescription>
-        </ToDoItem>
-        <ToDoItem>
-          <ToDoDescription>To DO ITEM 2</ToDoDescription>
-        </ToDoItem>
-        <ToDoItem>
-          <ToDoDescription>To DO ITEM 3</ToDoDescription>
-        </ToDoItem>
-        <ToDoItem>
-          <ToDoDescription>To DO ITEM 1</ToDoDescription>
-        </ToDoItem>
-        <ToDoItem>
-          <ToDoDescription>To DO ITEM 2</ToDoDescription>
-        </ToDoItem>
-        <ToDoItem>
-          <ToDoDescription>To DO ITEM 3</ToDoDescription>
-        </ToDoItem>
-        <ToDoItem>
-          <ToDoDescription>To DO ITEM 1</ToDoDescription>
-        </ToDoItem>
-        <ToDoItem>
-          <ToDoDescription>To DO ITEM 2</ToDoDescription>
-        </ToDoItem>
-        <ToDoItem>
-          <ToDoDescription>To DO ITEM 3</ToDoDescription>
-        </ToDoItem> */}
+        {items.map((e: IToDoItem) => (
+          <Item
+            key={e.id}
+            description={e.description}
+            id={e.id}
+            itemsSetState={setItems}
+            itemsState={items}
+          />
+        ))}
       </ItemContainer>
     </Container>
   );

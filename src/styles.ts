@@ -269,6 +269,14 @@ export const ToDoItem = styled.div<IDisabled>`
   &:hover .edit-button {
     display: block;
   }
+
+  .child-button {
+    display: ${(props) => (props.isDisabled ? "none" : "flex")};
+  }
+
+  .edit-button {
+    display: ${(props) => (props.isDisabled ? "none" : "block")};
+  }
 `;
 
 export const ToDoDescription = styled.input`
