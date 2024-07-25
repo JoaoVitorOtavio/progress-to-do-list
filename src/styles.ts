@@ -4,6 +4,12 @@ interface IDisabled {
   isDisabled: boolean;
 }
 
+interface IDone {
+  isDone: boolean;
+}
+
+interface ITodoItem extends IDisabled, IDone {}
+
 export const Container = styled.main`
   position: absolute;
   top: 50%;
@@ -148,7 +154,7 @@ export const RemoveAddIconContainer = styled.div`
   right: 0;
 `;
 
-export const IconContainer = styled.div`
+export const IconContainer = styled.div<Partial<IDone>>`
   height: 48px;
   width: 44px;
   align-items: center;
@@ -164,10 +170,9 @@ export const IconContainer = styled.div`
     background-color: #e34f4f;
     border: 1px solid #e34f4f;
   }
-
   &.add {
-    background-color: #5de290;
-    border: 1px solid #5de290;
+    background-color: ${(props) => (props.isDone ? "#ff7675" : "#5de290")};
+    border: 1px solid ${(props) => (props.isDone ? "#ff7675" : "#5de290")};
   }
 `;
 
@@ -249,14 +254,23 @@ export const ItemContainer = styled.div`
   }
 `;
 
-export const ToDoItem = styled.div<IDisabled>`
+const getBackgroundColor = (isDisabled: boolean, isDone: boolean) => {
+  if (isDisabled) {
+    return isDone ? "#d4edda" : "#f4f4f4";
+  }
+
+  return "#fff";
+};
+
+export const ToDoItem = styled.div<ITodoItem>`
   position: relative;
   display: flex;
   align-items: center;
   padding: 0 10px;
   height: 48px;
-  background: ${(props) => (props.isDisabled ? "#f4f4f4" : "#fff")} 0% 0%
-    no-repeat padding-box;
+  background: ${({ isDisabled, isDone }) =>
+      getBackgroundColor(isDisabled, isDone)}
+    0% 0% no-repeat padding-box;
   border: 1px solid #dbdbdb;
   opacity: 1;
   margin-bottom: 8px;
@@ -279,20 +293,18 @@ export const ToDoItem = styled.div<IDisabled>`
   }
 `;
 
-export const ToDoDescription = styled.input`
+export const ToDoDescription = styled.input<ITodoItem>`
   width: 100%;
   text-align: left;
   font: normal normal normal 14px/19px Roboto;
   letter-spacing: 0px;
   color: #848484;
   opacity: 1;
-  background-color: #fff;
+  background-color: ${({ isDisabled, isDone }) =>
+    getBackgroundColor(isDisabled, isDone)};
   outline: none;
   border: none;
-
-  &:disabled {
-    background-color: #f4f4f4;
-  }
+  text-decoration: ${(props) => (props.isDone ? "line-through" : "none")};
 `;
 
 export const InputAndTagsContainer = styled.div`

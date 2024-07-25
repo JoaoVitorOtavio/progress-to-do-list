@@ -1,4 +1,9 @@
-import { FaCirclePlus, FaCircleMinus, FaCircleCheck } from "react-icons/fa6";
+import {
+  FaCirclePlus,
+  FaCircleMinus,
+  FaCircleCheck,
+  FaCircleXmark,
+} from "react-icons/fa6";
 import { Dispatch, SetStateAction, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
@@ -34,6 +39,7 @@ import {
 interface IToDoItem {
   id: string;
   description: string;
+  isDone: boolean;
 }
 
 type TItemComponent = IToDoItem & {
@@ -46,6 +52,7 @@ const Item = ({
   id,
   itemsSetState,
   itemsState,
+  isDone,
 }: TItemComponent) => {
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [itemDescription, setItemDescription] = useState<string>(description);
@@ -58,6 +65,14 @@ const Item = ({
 
   const getItemsWithoutCurrent = () => {
     return itemsState.filter((item) => item.id !== id);
+  };
+
+  const handleToggleTaskCompletion = () => {
+    itemsSetState((prevItems) =>
+      prevItems.map((item) =>
+        item.id === id ? { ...item, isDone: !item.isDone } : item
+      )
+    );
   };
 
   const handleEditItem = () => {
@@ -91,7 +106,7 @@ const Item = ({
   };
 
   return (
-    <ToDoItem isDisabled={isDisabled}>
+    <ToDoItem isDisabled={isDisabled} isDone={isDone}>
       <EditButton onClick={() => handleEditItem()} className="edit-button">
         {isDisabled ? "Editar Task" : "Salvar"}
       </EditButton>
@@ -103,16 +118,25 @@ const Item = ({
         >
           <FaCircleMinus size="20px" color="#fff" />
         </IconContainer>
-        <IconContainer className="add child-button">
-          <FaCircleCheck
-            size="20px"
-            color="#fff"
-            onClick={() => console.log("ADICIONAR")}
-            title="Adicionar Item"
-          />
+        <IconContainer
+          isDone={isDone}
+          className="add child-button"
+          onClick={() => handleToggleTaskCompletion()}
+        >
+          {isDone ? (
+            <FaCircleXmark
+              size="20px"
+              color="#fff"
+              title="Cancelar Conclusão"
+            />
+          ) : (
+            <FaCircleCheck size="20px" color="#fff" title="Concluir Item" />
+          )}
         </IconContainer>
       </RemoveAddIconContainer>
       <ToDoDescription
+        isDisabled={isDisabled}
+        isDone={isDone}
         onChange={(e) => handleOnChangeDescription(e)}
         value={itemDescription}
         disabled={isDisabled}
@@ -146,7 +170,7 @@ function App() {
   const handleCreateToDoItem = () => {
     setItems((oldValue) => [
       ...oldValue,
-      { id: uuidv4(), description: newItemDescription },
+      { id: uuidv4(), description: newItemDescription, isDone: false },
     ]);
 
     setNewItemDescription("");
@@ -206,6 +230,7 @@ function App() {
           <Item
             key={e.id}
             description={e.description}
+            isDone={e.isDone}
             id={e.id}
             itemsSetState={setItems}
             itemsState={items}
