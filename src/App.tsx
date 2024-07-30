@@ -40,6 +40,7 @@ interface IToDoItem {
   id: string;
   description: string;
   isDone: boolean;
+  isVisible: boolean;
 }
 
 type TItemComponent = IToDoItem & {
@@ -53,6 +54,7 @@ const Item = ({
   itemsSetState,
   itemsState,
   isDone,
+  isVisible,
 }: TItemComponent) => {
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [itemDescription, setItemDescription] = useState<string>(description);
@@ -104,6 +106,8 @@ const Item = ({
     const filteredItems = getItemsWithoutCurrent();
     itemsSetState(filteredItems);
   };
+
+  if (!isVisible) return null;
 
   return (
     <ToDoItem isDisabled={isDisabled} isDone={isDone}>
@@ -161,19 +165,38 @@ function App() {
   const [newItemDescription, setNewItemDescription] = useState<string>("");
   const [items, setItems] = useState<IToDoItem[]>([]);
 
-  const handleChangeItemDescription = (
-    e: React.FormEvent<HTMLInputElement>
+  const handleChangeState = (
+    e: React.FormEvent<HTMLInputElement>,
+    setState: React.Dispatch<React.SetStateAction<string>>
   ) => {
-    setNewItemDescription(e.currentTarget.value);
+    setState(e.currentTarget.value);
   };
 
   const handleCreateToDoItem = () => {
     setItems((oldValue) => [
       ...oldValue,
-      { id: uuidv4(), description: newItemDescription, isDone: false },
+      {
+        id: uuidv4(),
+        description: newItemDescription,
+        isDone: false,
+        isVisible: true,
+      },
     ]);
 
     setNewItemDescription("");
+  };
+
+  const handleSearching = (e: React.FormEvent<HTMLInputElement>) => {
+    const searchDescription = e.currentTarget.value;
+
+    setItems((oldValue) =>
+      oldValue.map((item) => ({
+        ...item,
+        isVisible: item.description
+          .toLowerCase()
+          .includes(searchDescription.toLowerCase()),
+      }))
+    );
   };
 
   return (
@@ -199,7 +222,13 @@ function App() {
       </div>
       <InputAndTagsContainer>
         <InputContainer>
-          <Input placeholder="Search Items" endIcon />
+          <Input
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              handleSearching(e)
+            }
+            placeholder="Search Items"
+            endIcon
+          />
         </InputContainer>
         <FilterButtonContainer>
           <FilterButton className="mr">Done</FilterButton>
@@ -208,7 +237,9 @@ function App() {
       </InputAndTagsContainer>
       <NewItemInputContainer>
         <StyledInput
-          onChange={handleChangeItemDescription}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            handleChangeState(e, setNewItemDescription)
+          }
           value={newItemDescription}
           placeholder="Add new item..."
           className="newItem"
@@ -234,6 +265,7 @@ function App() {
             id={e.id}
             itemsSetState={setItems}
             itemsState={items}
+            isVisible={e.isVisible}
           />
         ))}
       </ItemContainer>
