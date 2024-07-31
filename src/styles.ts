@@ -192,6 +192,10 @@ export const FilterButtonContainer = styled.div`
 `;
 
 export const FilterButton = styled.button`
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  cursor: pointer;
   background: #ffffff 0% 0% no-repeat padding-box;
   border: 1px solid #dbdbdb;
   border-radius: 17px;
@@ -205,6 +209,11 @@ export const FilterButton = styled.button`
 
   &.mr {
     margin-right: 8px;
+  }
+
+  &.selected {
+    border: 1px solid #4da6b3;
+    color: #4da6b3;
   }
 `;
 

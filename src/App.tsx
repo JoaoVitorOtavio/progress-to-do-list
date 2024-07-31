@@ -3,6 +3,7 @@ import {
   FaCircleMinus,
   FaCircleCheck,
   FaCircleXmark,
+  FaCheck,
 } from "react-icons/fa6";
 import { Dispatch, SetStateAction, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
@@ -163,6 +164,9 @@ const Input: React.FC<InputProps> = ({ placeholder, endIcon, ...props }) => (
 
 function App() {
   const [newItemDescription, setNewItemDescription] = useState<string>("");
+  const [doneTagIsSected, setDoneTagIsSected] = useState<boolean>(false);
+  const [pedingTagIsSected, setPedingTagIsSected] = useState<boolean>(false);
+
   const [items, setItems] = useState<IToDoItem[]>([]);
 
   const handleChangeState = (
@@ -187,6 +191,9 @@ function App() {
   };
 
   const handleSearching = (e: React.FormEvent<HTMLInputElement>) => {
+    setDoneTagIsSected(false);
+    setPedingTagIsSected(false);
+
     const searchDescription = e.currentTarget.value;
 
     setItems((oldValue) =>
@@ -197,6 +204,34 @@ function App() {
           .includes(searchDescription.toLowerCase()),
       }))
     );
+  };
+
+  const handleStatusTagSearch = (status: "done" | "pending") => {
+    const resetItemsVisibility = () => {
+      setItems((oldValue) =>
+        oldValue.map((item) => ({ ...item, isVisible: true }))
+      );
+    };
+
+    if (
+      (status === "done" && doneTagIsSected) ||
+      (status === "pending" && pedingTagIsSected)
+    ) {
+      resetItemsVisibility();
+      setDoneTagIsSected(false);
+      setPedingTagIsSected(false);
+      return;
+    }
+
+    setDoneTagIsSected(status === "done");
+    setPedingTagIsSected(status === "pending");
+
+    const filteredValues = items.map((item) => ({
+      ...item,
+      isVisible: status === "done" ? item.isDone : !item.isDone,
+    }));
+
+    setItems(filteredValues);
   };
 
   return (
@@ -231,8 +266,20 @@ function App() {
           />
         </InputContainer>
         <FilterButtonContainer>
-          <FilterButton className="mr">Done</FilterButton>
-          <FilterButton>Pending</FilterButton>
+          <FilterButton
+            className={`mr ${doneTagIsSected && "selected"}`}
+            onClick={() => handleStatusTagSearch("done")}
+          >
+            {doneTagIsSected && <FaCheck />}
+            Done
+          </FilterButton>
+          <FilterButton
+            className={`${pedingTagIsSected && "selected"}`}
+            onClick={() => handleStatusTagSearch("pending")}
+          >
+            {pedingTagIsSected && <FaCheck />}
+            Pending
+          </FilterButton>
         </FilterButtonContainer>
       </InputAndTagsContainer>
       <NewItemInputContainer>
