@@ -237,6 +237,9 @@ function App() {
   const handleProgress = () => {
     const doneItems = items.filter((item) => item.isDone);
     const total = items.length;
+
+    if (total === 0) return `0%`;
+
     const done = doneItems.length;
     const progress = Math.round((done / total) * 100);
 
