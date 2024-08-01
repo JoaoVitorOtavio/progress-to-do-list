@@ -234,6 +234,15 @@ function App() {
     setItems(filteredValues);
   };
 
+  const handleProgress = () => {
+    const doneItems = items.filter((item) => item.isDone);
+    const total = items.length;
+    const done = doneItems.length;
+    const progress = Math.round((done / total) * 100);
+
+    return `${progress}%`;
+  };
+
   return (
     <Container>
       <DataContainer>
@@ -261,7 +270,7 @@ function App() {
       </DataContainer>
       <div>
         <BackgroundProgress>
-          <ProgressBar />
+          <ProgressBar progress={handleProgress()} />
         </BackgroundProgress>
       </div>
       <InputAndTagsContainer>

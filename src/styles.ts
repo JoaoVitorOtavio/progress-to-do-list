@@ -94,7 +94,11 @@ export const BackgroundProgress = styled.div`
   margin: 32px 0 24px 0;
 `;
 
-export const ProgressBar = styled.div`
+interface IProgress {
+  progress: string;
+}
+
+export const ProgressBar = styled.div<IProgress>`
   background: #5de290 0% 0% no-repeat padding-box;
   color: white;
   text-align: right;
@@ -103,7 +107,7 @@ export const ProgressBar = styled.div`
 
   height: 24px;
 
-  width: 80%;
+  width: ${(props) => props.progress};
   opacity: 1;
 `;
 
