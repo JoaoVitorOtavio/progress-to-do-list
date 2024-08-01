@@ -239,15 +239,24 @@ function App() {
       <DataContainer>
         <DataContentContainer>
           <div>
-            <DayDescription>07</DayDescription>
+            <DayDescription>{new Date().getDate()}</DayDescription>
           </div>
           <DataDescriptionContainer>
-            <MonthDayDescription>Jul</MonthDayDescription>
-            <YearDescription>2021</YearDescription>
+            <MonthDayDescription>
+              {new Date()
+                .toLocaleString("default", { month: "short" })
+                .substring(0, 3)
+                .replace(/^\w/, (c) => c.toUpperCase())}
+            </MonthDayDescription>
+            <YearDescription>{new Date().getFullYear()}</YearDescription>
           </DataDescriptionContainer>
         </DataContentContainer>
         <DayContainer>
-          <MonthDayDescription>Wednesday</MonthDayDescription>
+          <MonthDayDescription>
+            {new Intl.DateTimeFormat("en-US", { weekday: "long" })
+              .format(new Date())
+              .replace(/^./, (c) => c.toUpperCase())}
+          </MonthDayDescription>
         </DayContainer>
       </DataContainer>
       <div>
